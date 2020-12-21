@@ -1,0 +1,33 @@
+{
+  "name": "api.you.dev",
+  "version": "0.1.0",
+  "description": "You.Dev API source code",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/you-dot-dev/api.you.dev.git"
+  },
+  "keywords": [
+    "tutorial",
+    "knowledge",
+    "base",
+    "api",
+    "you.dev"
+  ],
+  "author": "Paul <paul@you.dev>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/you-dot-dev/api.you.dev/issues"
+  },
+  "homepage": "https://github.com/you-dot-dev/api.you.dev#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-mysql-session": "^2.1.5",
+    "express-session": "^1.17.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0"
+  }
+}
