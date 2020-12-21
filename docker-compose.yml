@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+
+  express:
+    build: .
+    ports:
+      - "7890:7890"
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: "you.dev"
+      MYSQL_USER: "you-dev-rw"
+      MYSQL_PASSWORD: "local-rw-password"
+      MYSQL_ROOT_PASSWORD: "local_root_password"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
