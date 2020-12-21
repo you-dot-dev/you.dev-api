@@ -65,7 +65,7 @@ docker build . \
 To run You.Dev's API directly on host, first install NodeJS dependencies. While in the repository root, run the command:
 
 ```bash
-npm intsall
+npm install
 ```
 
 
