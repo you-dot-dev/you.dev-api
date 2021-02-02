@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/you-dot-dev/api.you.dev#readme",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "express": "^4.17.1",
     "express-mysql-session": "^2.1.5",
     "express-session": "^1.17.1",
