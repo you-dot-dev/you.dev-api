@@ -38,4 +38,32 @@ auth.post("/register", jsonParse, (request, response) => {
 
 });
 
+/** POST /auth/signin
+ */
+auth.post("/signin", jsonParse, (request, response) => {
+
+  const { password, email, username } = request.body;
+
+      const db = request.app.get("appDb");
+
+      db.execute(
+        `SELECT * FROM users WHERE email=?`,
+        [email],
+
+        (err, results, fields) => {
+          if (err) { console.log("err", err); }
+
+          const [ dbUser ] = results;
+
+          bcrypt.compare(password, dbUser.password).then( (result) => {
+            console.log("Are they the same?", result);
+          });
+
+          response.json({
+            message: "Sign in successful."
+          });
+
+        });
+
+});
 module.exports = auth;
