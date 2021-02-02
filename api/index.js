@@ -45,11 +45,10 @@ const rootDb = {
 }
 
 
- 
-/** Create the connection to database
- */
-//const db = mysql.createConnection(rootDb);
- 
+api.set("rootDb", mysql.createConnection(rootDb));
+api.set("appDb", mysql.createConnection(appDb));
+
+
 /** Make sure sessions table exists
  */
 /*db.query(
