@@ -7,12 +7,18 @@ const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const passport = require("../lib/passport");
 const mysql = require('mysql2');
-
+const cors = require("cors");
 
 /** Create API
  */
 const api = express();
 
+/** Set CORS policy
+ */
+api.use( cors({
+  origin: 'http://localhost:8000',
+  optionsSuccessStatus: 200
+}) );
 
 /** Get Environment Variables
  */
