@@ -7,6 +7,7 @@ const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const passport = require("../lib/passport");
 const mysql = require('mysql2');
+const cors = require("cors");
 
 
 /** Create API
@@ -83,6 +84,11 @@ const sessionConfig = {
 
 /** Middleware
  */
+api.use( cors({
+  origin: 'http://localhost:8000',
+  optionsSuccessStatus: 200
+
+}) );
 api.use( session(sessionConfig) );
 api.use( passport.initialize() );
 api.use( passport.session() );
