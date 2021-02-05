@@ -59,8 +59,11 @@ auth.post("/signin", jsonParse, (request, response) => {
             console.log("Are they the same?", result);
           });
 
+          delete(dbUser.password);
+
           response.json({
-            message: "Sign in successful."
+            message: "Sign in successful.",
+            data: dbUser
           });
 
         });
