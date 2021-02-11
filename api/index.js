@@ -6,14 +6,19 @@ const express = require("express");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const passport = require("../lib/passport");
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const cors = require("cors");
-
 
 /** Create API
  */
 const api = express();
 
+/** Set CORS policy
+ */
+api.use( cors({
+  origin: 'http://localhost:8000',
+  optionsSuccessStatus: 200
+}) );
 
 /** Get Environment Variables
  */
@@ -46,8 +51,15 @@ const rootDb = {
 }
 
 
-api.set("rootDb", mysql.createConnection(rootDb));
-api.set("appDb", mysql.createConnection(appDb));
+
+async function createDatabaseConnections() {
+  const rootConnection = await mysql.createConnection(rootDb);
+  api.set("rootDb", rootConnection);
+  const appConnection = await mysql.createConnection(appDb);
+  api.set("appDb", appConnection);
+};
+
+createDatabaseConnections();
 
 
 /** Make sure sessions table exists

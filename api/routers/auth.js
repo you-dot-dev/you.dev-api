@@ -40,33 +40,30 @@ auth.post("/register", jsonParse, (request, response) => {
 
 /** POST /auth/signin
  */
-auth.post("/signin", jsonParse, (request, response) => {
+auth.post("/signin", jsonParse, async (request, response) => {
 
+  const db = request.app.get("appDb");
   const { password, email, username } = request.body;
 
-      const db = request.app.get("appDb");
-
-      db.execute(
-        `SELECT * FROM users WHERE email=?`,
-        [email],
-
-        (err, results, fields) => {
-          if (err) { console.log("err", err); }
-
-          const [ dbUser ] = results;
-
-          bcrypt.compare(password, dbUser.password).then( (result) => {
-            console.log("Are they the same?", result);
-          });
-
-          delete(dbUser.password);
-
-          response.json({
-            message: "Sign in successful.",
-            data: dbUser
-          });
-
-        });
+  try {
+    const [ rows, fields ] = await db.execute(`SELECT * FROM users WHERE email=?`, [email] );
+    const [ dbUser ] = rows;
+    const match = await bcrypt.compare(password, dbUser.password);
+    if (match) {
+      delete(dbUser.password);
+      response.json({
+        message: "Sign in successful.",
+        user: dbUser
+      });
+    } else {
+      response.status(401).json({
+        message: "Invalid credentials"
+      });
+    }
+  } catch (err) {
+    console.log("err:", err);
+  }
 
 });
+
 module.exports = auth;
