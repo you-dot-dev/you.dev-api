@@ -3,42 +3,42 @@ const auth = express.Router();
 const bcrypt = require("bcrypt");
 const jsonParse = express.json();
 
-const saltRounds = 10;
+const SALT_ROUNDS = 10;
 
-/** POST /auth/register
+
+/**
+ * URI: /auth/register
+ * Method: POST
+ * Content-Type: application/json
  */
-auth.post("/register", jsonParse, (request, response) => {
+auth.post("/register", jsonParse, async (request, response) => {
 
   const { password, email, username } = request.body;
+  const db = request.app.get("appDb");
 
-  bcrypt.genSalt(saltRounds, (err, salt) => {
+  try {
 
-    bcrypt.hash(password, salt, (err, hash) => {
+    const hash = await bcrypt.hash(password, SALT_ROUNDS);
 
-      if (err) { console.error(err) }
+    const [ rows, fields ] = await db.execute(
+      `INSERT INTO users(email, username, password) VALUES (?,?,?)`,
+      [email, username, hash]);
 
-      const db = request.app.get("appDb");
-
-      db.execute(
-        `INSERT INTO users(email, username, password) VALUES (?,?,?)`,
-        [email, username, hash],
-        (err, results, fields) => {
-          console.log("err", err);
-          console.log("results:", results);
-          console.log("fields:", fields);
-
-          response.json({
-            message: "Registration successful."
-          });
-
-        }
-      );
+    response.json({
+      message: "Registration successful."
     });
-  });
+
+  } catch (err) {
+    console.log("err?:", err);
+  }
 
 });
 
-/** POST /auth/signin
+
+/**
+ * URI: /auth/signin
+ * Method: POST
+ * Content-Type: application/json
  */
 auth.post("/signin", jsonParse, async (request, response) => {
 
