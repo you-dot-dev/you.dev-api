@@ -9,9 +9,24 @@ const passport = require("../lib/passport");
 const mysql = require('mysql2/promise');
 const cors = require("cors");
 
+const createDatabaseConnections = require("../lib/db/connections");
+
 /** Create API
  */
 const api = express();
+
+async function main() {
+
+  try {
+    await createDatabaseConnections(api);
+  } catch (err) {
+    console.log("err?:", err);
+  }
+}
+
+main();
+
+
 
 /** Set CORS policy
  */
@@ -25,62 +40,17 @@ api.use( cors({
 const {
   SESSION_SECRET,
   COOKIE_DOMAIN,
-  MYSQL_HOST,
-  MYSQL_PORT,
-  MYSQL_USER,
-  MYSQL_PASSWORD,
-  MYSQL_ROOT_PASSWORD,
-  MYSQL_DATABASE
 } = process.env;
 
-/** Create database config
- */
-const appDb = {
-  host: MYSQL_HOST,
-  port: +MYSQL_PORT,
-  user: MYSQL_USER,
-  password: MYSQL_PASSWORD,
-  database: MYSQL_DATABASE
-}
-const rootDb = {
-  host: MYSQL_HOST,
-  port: +MYSQL_PORT,
-  user: "root",
-  password: MYSQL_ROOT_PASSWORD,
-  database: MYSQL_DATABASE
-}
+createDatabaseConnections(api);
 
 
-
-async function createDatabaseConnections() {
-  const rootConnection = await mysql.createConnection(rootDb);
-  api.set("rootDb", rootConnection);
-  const appConnection = await mysql.createConnection(appDb);
-  api.set("appDb", appConnection);
-};
-
-createDatabaseConnections();
-
-
-/** Make sure sessions table exists
- */
-/*db.query(
-  'CREATE TABLE IF NOT EXISTS sessions;',
-
-  (err, results, fields) => {
-    if (err) {
-      console.error(err);
-    }
-    console.log(results); // results contains rows returned by server
-    console.log(fields); // fields contains extra meta data about results, if available
-  }
-);*/
 
 const sessionConfig = {
   secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  store: new MySQLStore(rootDb),
+  store: new MySQLStore(require("../lib/db/config/root")),
 
   cookie: {
     domain: COOKIE_DOMAIN,
