@@ -42,10 +42,6 @@ const {
   COOKIE_DOMAIN,
 } = process.env;
 
-createDatabaseConnections(api);
-
-
-
 const sessionConfig = {
   secret: SESSION_SECRET,
   resave: false,
