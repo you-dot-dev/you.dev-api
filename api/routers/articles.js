@@ -9,6 +9,20 @@ articles.get("/", (request, response) => {
 
 });
 
+articles.get("/:slug", async (request, response) => {
+
+  const db = request.app.get("appDb");
+
+  const [articles] = await db.execute(`SELECT * FROM articles WHERE slug=? `, [request.params.slug]);
+
+  const [article] = articles;
+  response.json({
+    message: "You got the Article!!",
+    article
+  });
+
+});
+
 articles.post("/", (request, response) => {
 
   response.json({
