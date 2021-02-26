@@ -10,6 +10,15 @@ const mysql = require('mysql2/promise');
 const cors = require("cors");
 
 const createDatabaseConnections = require("../lib/db/connections");
+const getIssuer = require("../lib/auth/getIssuer");
+
+/**
+ * Environment
+ */
+const {
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET
+} = process.env;
 
 /** Create API
  */
@@ -18,7 +27,21 @@ const api = express();
 async function main() {
 
   try {
+
     await createDatabaseConnections(api);
+
+    const googleIssuer = await getIssuer("https://accounts.google.com");
+    api.set("googleIssuer", googleIssuer);
+
+    const googleOAuthClient = new googleIssuer.Client({
+      client_id: GOOGLE_CLIENT_ID,
+      client_secret: GOOGLE_CLIENT_SECRET,
+      redirect_uris: ['http://localhost:7890/auth/redirect'],
+      response_types: ['code']
+    });
+
+    api.set("googleOAuthClient", googleOAuthClient);
+
   } catch (err) {
     console.log("err?:", err);
   }
@@ -50,9 +73,9 @@ const sessionConfig = {
 
   cookie: {
     domain: COOKIE_DOMAIN,
-    secure: true,
-    httpOnly: true,
-    sameSite: true,
+    secure: false,
+    httpOnly: false,
+    sameSite: false,
     path: "/",
     maxAge: null
   }

@@ -10,13 +10,17 @@ services:
       - "mysql"
     environment:
       SESSION_SECRET: "lalala-session-secret"
-      COOKIE_DOMAIN: "localhost:7890"
+      COOKIE_DOMAIN: "localhost"
       MYSQL_HOST: "mysql"
       MYSQL_PORT: "3306"
       MYSQL_DATABASE: "you.dev"
       MYSQL_USER: "you-dev-rw"
       MYSQL_PASSWORD: "local-rw-password"
       MYSQL_ROOT_PASSWORD: "local_root_password"
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
+      GITHUB_CLIENT_ID: "${GITHUB_CLIENT_ID}"
+      GITHUB_CLIENT_SECRET: "${GITHUB_CLIENT_SECRET}"
 
   mysql:
     image: mysql:5.7

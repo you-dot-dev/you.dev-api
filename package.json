@@ -31,6 +31,7 @@
     "express-session": "^1.17.1",
     "knex": "^0.21.17",
     "mysql2": "^2.2.5",
+    "openid-client": "^4.4.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0"
   }
