@@ -8,7 +8,6 @@ const SALT_ROUNDS = 10;
 
 
 auth.get("/userinfo", (request, response) => {
-  console.log("res.cookie()?", response.cookie());
   console.log("request.session from userinfo?", request.session);
   response.json(request.session.user);
 });
@@ -148,7 +147,10 @@ auth.get("/google", async (request, response) => {
   console.log("url?", authorizationUrl);
   console.log("request.session?", request.session);
 
-  response.redirect(authorizationUrl);
+  response.json({
+    "message": "Generated Google OAuth authorization URL.",
+    authorizationUrl
+  });
 
 });
 
