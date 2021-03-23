@@ -3,6 +3,8 @@ const auth = express.Router();
 const bcrypt = require("bcrypt");
 const jsonParse = express.json();
 const { generators } = require('openid-client');
+const axios = require("axios");
+const qs = require("qs");
 
 const SALT_ROUNDS = 10;
 
@@ -26,9 +28,24 @@ auth.post("/register", jsonParse, async (request, response) => {
 
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
 
+    const stripeUser = await axios({
+      method: 'POST',
+      url: "https://api.stripe.com/v1/customers",
+      data: qs.stringify({
+        name: username,
+        email,
+      }),
+      headers: {
+        'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+      }
+    });
+
+    console.log("stripeUser", stripeUser);
+
     const [ rows, fields ] = await db.execute(
-      `INSERT INTO users(email, username, password) VALUES (?,?,?)`,
-      [email, username, hash]);
+      `INSERT INTO users(email, username, password, stripe_customer_id) VALUES (?,?,?,?)`,
+      [email, username, hash, stripeUser.data.id]);
 
     response.json({
       message: "Registration successful."
