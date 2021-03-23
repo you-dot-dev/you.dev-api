@@ -11,6 +11,7 @@ services:
     environment:
       SESSION_SECRET: "lalala-session-secret"
       COOKIE_DOMAIN: "localhost"
+      STRIPE_SECRET_KEY: "${STRIPE_SECRET_KEY}"
       MYSQL_HOST: "mysql"
       MYSQL_PORT: "3306"
       MYSQL_DATABASE: "you.dev"
