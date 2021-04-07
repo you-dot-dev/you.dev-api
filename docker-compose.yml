@@ -9,6 +9,7 @@ services:
     depends_on:
       - "mysql"
     environment:
+      NODE_ENV: "${NODE_ENV}"
       SESSION_SECRET: "lalala-session-secret"
       COOKIE_DOMAIN: "localhost"
       STRIPE_SECRET_KEY: "${STRIPE_SECRET_KEY}"
