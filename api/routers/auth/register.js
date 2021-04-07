@@ -3,6 +3,7 @@
  */
 const axios = require("axios");
 const bcrypt = require("bcrypt");
+const qs = require("qs");
 
 const SALT_ROUNDS = 10;
 
@@ -11,6 +12,27 @@ module.exports = async (request, response) => {
   const { password, email, username } = request.body;
 
   const db = request.app.get("appDb");
+
+  try {
+    const [emails, email_fields] = await db.execute(`SELECT email, username FROM users WHERE email=?`, [email]);
+    if (emails.length > 0) {
+      console.log("FOUND A DUPLICATE!!! NOT GOOD!!!");
+      response.status(409).json({
+        message: "Email already registered."
+      });
+      return "dupe";
+    }
+    const [usernames, username_fields] = await db.execute(`SELECT email, username FROM users WHERE username=?`, [username]);
+    if (usernames.length > 0) {
+      console.log("FOUND A DUPLICATE!!! NOT GOOD!!!");
+      response.status(409).json({
+        message: "Username taken."
+      });
+      return "dupe";
+    }
+  } catch (err) {
+    console.log("CAN'T CONTACT DB!!! Sad!");
+  }
 
   try {
 
@@ -29,7 +51,7 @@ module.exports = async (request, response) => {
       }
     });
 
-    console.log("stripeUser", stripeUser);
+    console.log("stripeUser.data", stripeUser.data);
 
     const [ rows, fields ] = await db.execute(
       `INSERT INTO users(email, username, password, stripe_customer_id) VALUES (?,?,?,?)`,
