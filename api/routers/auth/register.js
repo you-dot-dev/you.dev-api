@@ -57,8 +57,12 @@ module.exports = async (request, response) => {
       `INSERT INTO users(email, username, password, stripe_customer_id) VALUES (?,?,?,?)`,
       [email, username, hash, stripeUser.data.id]);
 
+    const [ newUser, newUserFields ] = await db.execute( `SELECT * FROM users WHERE email=?`, [email] );
+
     response.json({
-      message: "Registration successful."
+      message: "Registration successful.",
+      user: newUser[0],
+      success: true
     });
 
   } catch (err) {
