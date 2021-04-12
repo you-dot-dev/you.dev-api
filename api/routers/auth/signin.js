@@ -1,6 +1,9 @@
 /**
  * routers/auth/signin.js
  */
+
+const bcrypt = require("bcrypt");
+
 module.exports = async (request, response) => {
 
   const db = request.app.get("appDb");
@@ -11,6 +14,7 @@ module.exports = async (request, response) => {
 
     const [ rows, fields ] = await db.execute( `SELECT * FROM users WHERE email=?`, [email] );
     const [ dbUser ] = rows;
+    console.log("dbUser from signin?", dbUser);
     const match = await bcrypt.compare( password, dbUser.password );
 
     if ( match ) {

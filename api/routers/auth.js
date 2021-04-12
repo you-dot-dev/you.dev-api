@@ -16,6 +16,7 @@ auth.get("/userinfo", require("./auth/userinfo") );
 auth.post("/register", jsonParse, require("./auth/register") );
 auth.post("/signin", jsonParse, require("./auth/signin") );
 auth.get("/redirect", require("./auth/redirect") );
+auth.get("/logout", require("./auth/logout") );
 
 
 auth.get("/google", async (request, response) => {
