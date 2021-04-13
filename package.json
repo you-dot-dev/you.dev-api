@@ -26,6 +26,7 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^1.4.0",
     "@stripe/stripe-js": "^1.13.1",
+    "@sendgrid/mail": "^7.4.2",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
@@ -34,6 +35,7 @@
     "express-session": "^1.17.1",
     "knex": "^0.21.17",
     "mysql2": "^2.2.5",
+    "nodemailer": "^6.5.0",
     "openid-client": "^4.4.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",

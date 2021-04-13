@@ -48,6 +48,19 @@ async function main() {
 
     api.set("googleOAuthClient", googleOAuthClient);
 
+    /** Set CORS policy
+     */
+    api.use( cors({
+      origin: 'http://localhost:8000',
+      optionsSuccessStatus: 200
+    }) );
+
+    api.use( (req,res,next) => {
+      res.setHeader("Access-Control-Allow-Credentials", true);
+      next();
+    })
+
+
   } catch (err) {
     console.log("err?:", err);
   }
@@ -108,6 +121,7 @@ api.get(`/`, (req, res) => {
 api.use(`/auth`, require("./routers/auth") );
 api.use(`/articles`, require("./routers/articles"));
 api.use(`/user`, require("./routers/user"));
+api.use(`/mail`, require("./routers/mail"));
 
 
 /**
