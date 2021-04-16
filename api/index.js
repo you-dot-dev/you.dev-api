@@ -89,7 +89,7 @@ const sessionConfig = {
     domain: COOKIE_DOMAIN,
     secure: false,
     httpOnly: true,
-    sameSite: true,
+    sameSite: false,
     path: "/",
     maxAge: null
   }
@@ -121,7 +121,7 @@ api.get(`/`, (req, res) => {
 api.use(`/auth`, require("./routers/auth") );
 api.use(`/articles`, require("./routers/articles"));
 api.use(`/user`, require("./routers/user"));
-api.use(`/mail`, require("./routers/mail"));
+//api.use(`/mail`, require("./routers/mail"));
 
 
 /**
