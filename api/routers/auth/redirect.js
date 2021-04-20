@@ -1,6 +1,7 @@
 /**
  * routers/auth/redirect.js
  */
+const createStripeUser = require("../../../lib/auth/createStripeUser");
 module.exports = async (request, response) => {
   console.log("req.params?", request.params);
   console.log("req.query?", request.query);
@@ -25,12 +26,13 @@ module.exports = async (request, response) => {
   try {
     const [ potentialUsers ] = await db.execute(`SELECT * FROM users WHERE email=?`, [email]);
     if (potentialUsers.length === 0) {
+      const stripeUser = await createStripeUser(name, email);
       await db.execute(
-        `INSERT INTO users (username, email, google, issuer) VALUES (?,?,?,?)`,
-        [name, email, 1, iss]
+        `INSERT INTO users (username, email, google, issuer, stripe_customer_id) VALUES (?,?,?,?,?)`,
+        [name, email, 1, iss, stripeUser.id]
       );
       const [ users ] = await db.execute(`SELECT * FROM users WHERE email=?`, [email]);
-      const [ dbUser ] = rows;
+      const [ dbUser ] = users;
       delete dbUser.password;
       request.session.user = dbUser;
       console.log("dbUser wtf", dbUser);

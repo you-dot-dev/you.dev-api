@@ -4,6 +4,7 @@
 const axios = require("axios");
 const bcrypt = require("bcrypt");
 const qs = require("qs");
+const createStripeUser = require("../../../lib/auth/createStripeUser");
 
 const SALT_ROUNDS = 10;
 
@@ -38,24 +39,13 @@ module.exports = async (request, response) => {
 
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
 
-    const stripeUser = await axios({
-      method: "POST",
-      url: "https://api.stripe.com/v1/customers",
-      data: qs.stringify({
-        name: username,
-        email,
-      }),
-      headers: {
-        'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-      }
-    });
+    const stripeUser = await createStripeUser(username, email);
 
-    console.log("stripeUser.data", stripeUser.data);
+    console.log("stripeUser from createStripeUser?:", stripeUser);
 
     const [ rows, fields ] = await db.execute(
       `INSERT INTO users(email, username, password, stripe_customer_id) VALUES (?,?,?,?)`,
-      [email, username, hash, stripeUser.data.id]);
+      [email, username, hash, stripeUser.id]);
 
     const [ newUser, newUserFields ] = await db.execute( `SELECT * FROM users WHERE email=?`, [email] );
 
