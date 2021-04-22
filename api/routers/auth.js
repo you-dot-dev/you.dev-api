@@ -8,7 +8,9 @@ const qs = require("qs");
 
 
 const {
-  NODE_ENV
+  NODE_ENV,
+  GITHUB_CLIENT_ID,
+  GITHUB_AUTHORIZE_URL
 } = process.env;
 
 
@@ -41,6 +43,21 @@ auth.get("/google", async (request, response) => {
     authorizationUrl
   });
 
+});
+
+auth.get("/github", async (request, response) => {
+  const state = Math.floor( Math.random()*1000000 );
+  request.session["state"] = state;
+  const params = {
+    client_id: GITHUB_CLIENT_ID,
+    scope: "user",
+    state
+  };
+  const authorizationUrl = `${GITHUB_AUTHORIZE_URL}?${qs.stringify(params)}`;
+  response.json({
+    "message": "Generated Github OAuth authorization URL.",
+    authorizationUrl
+  });
 });
 
 
