@@ -1,4 +1,5 @@
 /**
+ *
  * routers/auth/redirect.js
  */
 const axios = require("axios");
@@ -91,6 +92,20 @@ module.exports = async (request, response) => {
       });
 
       console.log("githubUser?:", githubUser.data);
+
+      const db = request.app.get("appDb");
+      const username = githubUser.data.login;
+      await db.execute(
+        `INSERT INTO users (username, github, issuer) VALUES (?,?,?)`,
+        [username, 1, "github"]
+      );
+
+      const [ users ] = await db.execute( `SELECT * FROM users WHERE username=?;`, [username] );
+      const [ dbUser ] = users;
+
+      dbUser.email = `${username} (no email)`;
+
+      request.session.user = dbUser;
 
 
     } catch (err) {
