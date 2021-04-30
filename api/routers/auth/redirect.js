@@ -64,6 +64,7 @@ module.exports = async (request, response) => {
       console.log("err", err);
     }
   } else {
+
     try {
       console.log("Github flow is working!");
       const code = request.query["code"];
@@ -91,22 +92,34 @@ module.exports = async (request, response) => {
         }
       });
 
-      console.log("githubUser?:", githubUser.data);
+      console.log("githubUser.data?:", githubUser.data);
 
       const db = request.app.get("appDb");
       const username = githubUser.data.login;
-      await db.execute(
-        `INSERT INTO users (username, github, issuer) VALUES (?,?,?)`,
-        [username, 1, "github"]
+
+      const email = githubUser.data.email;
+
+      const [ potentialUsers ] = await db.execute(
+        `SELECT * FROM users WHERE username=? AND issuer='github';`,
+        [username]
       );
 
-      const [ users ] = await db.execute( `SELECT * FROM users WHERE username=?;`, [username] );
-      const [ dbUser ] = users;
+      if (potentialUsers.length === 0) {
+        await db.execute(
+          `INSERT INTO users (username, email, github, issuer) VALUES (?,?,?,?)`,
+          [username, email, 1, "github"]
+        );
+        const [ users ] = await db.execute( `SELECT * FROM users WHERE username=?;`, [username] );
+        const [ dbUser ] = users;
 
-      dbUser.email = `${username} (no email)`;
+        dbUser.email = `${username} (no email)`;
 
-      request.session.user = dbUser;
-
+        request.session.user = dbUser;
+      } else {
+        const [ dbUser ] = potentialUsers;
+        dbUser.email = `${username} (no email)`;
+        request.session.user = dbUser;
+      }
 
     } catch (err) {
       console.log("err in github authcode?:", err);
