@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/you-dot-dev/api.you.dev#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.2",
     "@stripe/react-stripe-js": "^1.4.0",
     "@stripe/stripe-js": "^1.13.1",
-    "@sendgrid/mail": "^7.4.2",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
@@ -39,6 +39,7 @@
     "openid-client": "^4.4.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "qs": "^6.10.1"
+    "qs": "^6.10.1",
+    "stripe": "^8.148.0"
   }
 }
