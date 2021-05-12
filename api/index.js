@@ -121,6 +121,7 @@ api.get(`/`, (req, res) => {
 api.use(`/auth`, require("./routers/auth") );
 api.use(`/articles`, require("./routers/articles"));
 api.use(`/user`, require("./routers/user"));
+api.use(`/plans`, require("./routers/plans"));
 //api.use(`/mail`, require("./routers/mail"));
 
 

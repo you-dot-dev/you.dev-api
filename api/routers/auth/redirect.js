@@ -6,11 +6,15 @@ const axios = require("axios");
 const qs = require("qs");
 
 const createStripeUser = require("../../../lib/auth/createStripeUser");
+
 const {
   GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET,
-  REDIRECT_URI
+  REDIRECT_URI,
+  STRIPE_SECRET_KEY
 } = process.env;
+
+const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
 
 module.exports = async (request, response) => {
@@ -58,6 +62,8 @@ module.exports = async (request, response) => {
         const [ dbUser ] = potentialUsers;
         delete dbUser.password;
         request.session.user = dbUser;
+        const stripeCustomer = await stripe.customers.retrieve(request.session.user.stripe_customer_id);
+        request.session.user.subscriptions = stripeCustomer.subscriptions;
         console.log("request.session:", request.session);
       }
     } catch (err) {
@@ -111,13 +117,9 @@ module.exports = async (request, response) => {
         );
         const [ users ] = await db.execute( `SELECT * FROM users WHERE username=?;`, [username] );
         const [ dbUser ] = users;
-
-        dbUser.email = `${username} (no email)`;
-
         request.session.user = dbUser;
       } else {
         const [ dbUser ] = potentialUsers;
-        dbUser.email = `${username} (no email)`;
         request.session.user = dbUser;
       }
 

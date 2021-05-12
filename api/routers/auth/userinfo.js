@@ -19,6 +19,14 @@ module.exports = (request, response) => {
     console.log( log );
   }
 
-  response.json( request.session.user );
+  if (request.session && request.session.user) {
+    response.json( request.session.user );
+  } else {
+    response.json({
+      username: "guest",
+      email: "guest"
+    });
+  }
+
 
 }
